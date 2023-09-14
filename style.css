@@ -1,0 +1,124 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.elevator-system {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.container {
+  color: white;
+  display: flex;
+  gap: 15px;
+  box-sizing: content-box;
+  padding: 10px 20px;
+  background-color: #006266;
+}
+
+.elevator,
+.switches-col {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.button-group {
+  height: 300px;
+}
+.floors {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  width: 100px;
+  background-color: #b1e2ff;
+}
+.floor {
+  text-align: center;
+  position: absolute;
+  bottom: 0;
+  background-color: gray;
+  transition: all 1s;
+  height: 60px;
+  width: 50%;
+}
+.button-group {
+  height: 60px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.button-group > * {
+  width: 24px;
+  height: 24px;
+  background-color: #26253d;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.buttons {
+  background-color: inherit;
+}
+.switch {
+  margin: 10px auto;
+}
+.switch input[type="checkbox"] {
+  width: 0;
+}
+.switch label {
+  position: relative;
+  display: inline-block;
+  height: 20px;
+  width: 40px;
+  background-color: rgb(184, 184, 184);
+  border-radius: 10px;
+}
+.switch label div {
+  position: absolute;
+  display: inline-block;
+  left: 0;
+  right: 100%;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background-color: white;
+  transition: all 0.3s;
+}
+.switch input[type="checkbox"]:checked + label div {
+  margin-left: 20px;
+}
+.switch input[type="checkbox"]:checked + label {
+  background-color: rgb(105, 105, 250);
+}
+.btn {
+  cursor: pointer;
+}
+.btn:hover {
+  background-color: #b1e2ff;
+}
+.up-btn.btn:hover span {
+  border-bottom: 9px solid #26253d;
+}
+.down-btn.btn:hover span {
+  border-top: 9px solid #26253d;
+}
+.up-btn span {
+  border-left: 8.5px solid transparent;
+  border-right: 8.5px solid transparent;
+  border-bottom: 8.5px solid white;
+}
+.down-btn span {
+  border-left: 8.5px solid transparent;
+  border-right: 8.5px solid transparent;
+  border-top: 8.5px solid white;
+}
+.maintenance-heading {
+  display: flex;
+  margin: 10px auto;
+  font-size: 1.5em;
+}
+.hidden {
+  display: none;
+}
