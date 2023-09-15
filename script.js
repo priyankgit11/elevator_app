@@ -1,8 +1,4 @@
-////////////////////////////////////////////////// Selecting elements
-const containerElement = document.querySelector(".container");
-const floorElements = Array.from(document.querySelectorAll(".floor"));
-const allCheckbox = Array.from(document.querySelectorAll(".checkbx"));
-
+"use strict";
 // Initialising required variables
 const elevators = parseInt(prompt("Enter the number of elevators:"));
 const floors = parseInt(prompt("Enter the number of floors"));
@@ -20,6 +16,77 @@ const elevatorsArray = new Array(elevators).fill().map(() =>
 const currentFloors = new Array(elevators).fill(1);
 console.log(currentFloors);
 createGui(elevators, floors);
+////////////////////////////////////////////////// Selecting elements
+const containerElement = document.querySelector(".container");
+const floorElements = Array.from(document.querySelectorAll(".floor"));
+const allCheckbox = Array.from(document.querySelectorAll(".checkbx"));
+const upFloorButtons = Array.from(document.querySelectorAll(".up-btn"));
+const downFloorButtons = Array.from(document.querySelectorAll(".down-btn"));
+//////////////////////////////////////////////// Event Listeners
+// Adding event listener to slider buttons(checkbox)
+allCheckbox.map((ele) => {
+  ele.addEventListener("change", () => {
+    let idNum = getIdNum(ele);
+    let lift = document.getElementById(`lift${idNum}`);
+    lift.style.removeProperty("bottom");
+    currentFloors[idNum] = 1;
+    console.log(idNum, currentFloors[idNum], "idNum");
+    lift.classList.toggle("disable");
+    if (ele.checked === false) lift.style.bottom = "0px";
+  });
+});
+
+//Adding Event Listeners to floor buttons
+upFloorButtons.map((btn, i) => {
+  btn.addEventListener("click", () => {
+    let btnIdNum = getIdNum(btn);
+    let minDiff = floors;
+    let resultLift = currentFloors.reduce(
+      (acc, curr, i) => {
+        console.log(minDiff, i);
+        if (
+          minDiff > Math.abs(curr - btnIdNum) &&
+          document
+            .getElementById(`lift${i + 1}`)
+            .classList.contains("disable") === false
+        ) {
+          acc = [i + 1, Math.abs(curr - btnIdNum), btnIdNum - curr >= 0];
+          minDiff = Math.abs(curr - btnIdNum);
+        }
+        console.log(acc, "acc");
+        return acc;
+      },
+      [1, 1, false]
+    );
+    console.log(resultLift);
+    moveHelper(...resultLift);
+  });
+});
+downFloorButtons.map((btn, i) => {
+  btn.addEventListener("click", () => {
+    let btnIdNum = getIdNum(btn);
+    let minDiff = floors;
+    let resultLift = currentFloors.reduce(
+      (acc, curr, i) => {
+        console.log(minDiff, i);
+        if (
+          minDiff > Math.abs(curr - btnIdNum) &&
+          document
+            .getElementById(`lift${i + 1}`)
+            .classList.contains("disable") === false
+        ) {
+          acc = [i + 1, Math.abs(curr - btnIdNum), btnIdNum - curr >= 0];
+          minDiff = Math.abs(curr - btnIdNum);
+        }
+        console.log(acc, "acc");
+        return acc;
+      },
+      [1, 1, false]
+    );
+    console.log(resultLift);
+    moveHelper(...resultLift);
+  });
+});
 
 ///////////////////////////////////////////////////////// Functions
 // Building up gui of elevators
@@ -28,20 +95,20 @@ function createGui(elevators, floors) {
   // Adding floor buttons
   for (let i = floors; i > 0; i--) {
     console.log("Hello");
-    buttonsHtml += `<div class="button-group" id="b${i}">
+    buttonsHtml += `<div class="button-group" id="btn${i}">
               <div class="floor-number">${i}</div>
-              <div class="up-btn btn"><span></span></div>
-              <div class="down-btn btn"><span></span></div>
+              <div class="up-btn btn" id="up${i}"><span></span></div>
+              <div class="down-btn btn" id="down${i}"><span></span></div>
             </div>`;
   }
-  const floorButtons = document.querySelector(".floor-buttons");
+  let floorButtons = document.querySelector(".floor-buttons");
   floorButtons.innerHTML = buttonsHtml;
   //Adding elevators
   let html = "";
   for (let i = 1; i <= elevators; i++) {
-    html += `<div class="elevator" id="lift${i}">
+    html += `<div class="elevator">
           <div class="floors">
-            <div class="floor">1</div>
+            <div class="floor" id="lift${i}">1</div>
           </div>
           <div class="switch" id="switch${i}">
             <input type="checkbox" class="checkbx" id="c${i}" />
@@ -56,9 +123,9 @@ function createGui(elevators, floors) {
           <div class="maintenance-heading">Maintenance</div>
         </div>`;
   // console.log(html);
-
+  let containerElement = document.querySelector(".container");
   containerElement.innerHTML = html;
-  const floorsClass = Array.from(document.getElementsByClassName("floors"));
+  let floorsClass = Array.from(document.getElementsByClassName("floors"));
   floorsClass.map((ele) => {
     ele.style.height = 60 * floors + "px";
     console.log(ele.style.height);
@@ -72,6 +139,42 @@ function createGui(elevators, floors) {
   btnGroups[btnGroups.length - 1].querySelector(".down-btn").style.display =
     "none";
 }
+// Function to get id number from id
+function getIdNum(idEle) {
+  let str = idEle.id;
+  let result = str.replace(/[^0-9]/g, "");
+  return parseInt(result);
+}
+// Function to extract number from a string
+function extractNumber(str) {
+  let result = str.replace(/[^0-9]/g, "");
+  result = result === "" ? 0 : result;
+  return parseInt(result);
+}
+//Helper function to move lift
+const moveHelper = function (id, floorDif, dir) {
+  if (dir) moveUp(id, floorDif);
+  else moveDown(id, floorDif);
+};
+const moveUp = function (id, floorDif) {
+  console.log(id, "id", floorDif, "");
+  currentFloors[id] += floorDif;
+  let curLift = document.getElementById(`lift${id}`);
+  let curLiftBottom = extractNumber(curLift.style.bottom);
+  curLiftBottom = curLiftBottom === "" ? 0 : curLiftBottom;
+  for (let i = 0; i < floorDif; i++) {
+    curLift.style.bottom = `${(i + 1) * 60 + curLiftBottom}px`;
+  }
+};
+const moveDown = function (id, floorDif) {
+  console.log(id, "id");
+  currentFloors[id] -= floorDif;
+  let curLift = document.getElementById(`lift${id}`);
+  let curLiftBottom = extractNumber(curLift.style.bottom);
+  for (let i = 0; i < floorDif; i++) {
+    curLift.style.bottom = `${curLiftBottom - (i + 1) * 60}px`;
+  }
+};
 
 // const newspaperSpinning = [{ transform: "translateY(100%)", content: newText }];
 // const button = document.getElementById("c1");
