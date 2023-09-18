@@ -28,10 +28,13 @@ allCheckbox.map((ele) => {
   ele.addEventListener("change", () => {
     let idNum = getIdNum(ele);
     let lift = document.getElementById(`lift${idNum}`);
+    // removing inline style to add 'disable' class
     lift.style.removeProperty("bottom");
-    currentFloors[idNum] = 1;
+    currentFloors[idNum - 1] = 1;
+    lift.textContent = "1";
     console.log(idNum, currentFloors[idNum], "idNum");
     lift.classList.toggle("disable");
+    // adding inline style
     if (ele.checked === false) lift.style.bottom = "0px";
   });
 });
@@ -56,7 +59,7 @@ upFloorButtons.map((btn, i) => {
         console.log(acc, "acc");
         return acc;
       },
-      [1, 1, false]
+      [1, 0, false]
     );
     console.log(resultLift);
     moveHelper(...resultLift);
@@ -81,7 +84,7 @@ downFloorButtons.map((btn, i) => {
         console.log(acc, "acc");
         return acc;
       },
-      [1, 1, false]
+      [1, 0, false]
     );
     console.log(resultLift);
     moveHelper(...resultLift);
@@ -158,21 +161,27 @@ const moveHelper = function (id, floorDif, dir) {
 };
 const moveUp = function (id, floorDif) {
   console.log(id, "id", floorDif, "");
-  currentFloors[id] += floorDif;
+  currentFloors[id - 1] += floorDif;
   let curLift = document.getElementById(`lift${id}`);
   let curLiftBottom = extractNumber(curLift.style.bottom);
-  curLiftBottom = curLiftBottom === "" ? 0 : curLiftBottom;
+  curLift.style.transition = `all ${floorDif * 1}s linear`;
   for (let i = 0; i < floorDif; i++) {
     curLift.style.bottom = `${(i + 1) * 60 + curLiftBottom}px`;
+    curLift.textContent = `${parseInt(curLift.textContent) + 1}`;
+    console.log("Hielo");
   }
+  console.log(parseInt(curLift.textContent));
 };
 const moveDown = function (id, floorDif) {
   console.log(id, "id");
-  currentFloors[id] -= floorDif;
+  currentFloors[id - 1] -= floorDif;
   let curLift = document.getElementById(`lift${id}`);
   let curLiftBottom = extractNumber(curLift.style.bottom);
+  curLift.style.transition = `all ${floorDif * 1}s linear`;
   for (let i = 0; i < floorDif; i++) {
     curLift.style.bottom = `${curLiftBottom - (i + 1) * 60}px`;
+    curLift.textContent = `${parseInt(curLift.textContent) - 1}`;
+    console.log("Hielo");
   }
 };
 
